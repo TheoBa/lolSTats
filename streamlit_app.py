@@ -10,6 +10,7 @@ def main():
     st.dataframe(load.raw)
     patch_range = st.slider(label= 'Chose patch range', min_value=load.raw.patch.min(), max_value=load.raw.patch.max(), value=[12., load.raw.patch.max()])
     st.markdown(patch_range)
+    st.image(load.im)
     return
 
 
