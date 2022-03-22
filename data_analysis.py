@@ -19,15 +19,10 @@ def image_from_champion(champion_name):
 
 def presence_winrate_per_position(pos, top_champs_per_position, df):
     champions_shortlist = top_champs_per_position[pos]
-    for champion in champions_shortlist:
-        st.markdown(champion)
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
+    cols = st.columns(len(champions_shortlist))
+    for i, champion in enumerate(champions_shortlist):
+        with cols[i]:
+            st.markdown(champion)
             image_from_champion(champion.replace(' ', '_').replace("'", "%27").replace(" & ", "_%26_"))
-        with col2:
-            cv2_image_from_champion(champion.replace(' ', '_').replace("'", "%27").replace(" & ", "_%26_"), cv2.IMREAD_COLOR)
-        with col3:
-            cv2_image_from_champion(champion.replace(' ', '_').replace("'", "%27").replace(" & ", "_%26_"), cv2.IMREAD_GRAYSCALE)
-        with col4:
-            cv2_image_from_champion(champion.replace(' ', '_').replace("'", "%27").replace(" & ", "_%26_"), cv2.COLOR_RGB2HSV)
+        
     st.dataframe(df[df.champion.isin(champions_shortlist)])
