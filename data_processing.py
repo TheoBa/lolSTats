@@ -72,10 +72,19 @@ def get_df_champions_statistics(micro):
     return micro.groupby(['champion'], as_index=False).mean(stats).rename(columns={'result': 'winrate'})
     
 
-
 def champs_dataframe(micro, macro, stats):
     df_list = []
     for champion in micro.champion.unique():
         df_list.append([champion, 
                         get_champion_presence(micro, macro, champion)])
     return pd.DataFrame(df_list, columns=['champion', 'presence']).merge(stats, on='champion', how='inner')
+
+
+def get_top_champs_per_position(micro):
+    top_champs_per_position = {}
+    for pos in micro.position.unique():
+        considered_champions = list(micro[micro.position==pos].groupby(['champion']).size().reset_index(name='counts').sort_values(by='counts', ascending=False).head(15).champion)
+        top_champs_per_position[pos] = considered_champions
+    return top_champs_per_position
+
+
