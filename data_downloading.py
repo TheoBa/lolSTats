@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime
 import os.path
+import argparse
 
 
 def download_csv():
@@ -42,5 +43,12 @@ class Champions:
                 f.write(r.content)
 
 
-champions = Champions()
-champions.download_champion_images()
+parser = argparse.ArgumentParser(description='Process some downloads.')
+parser.add_argument('--csv', action='store_true', help='Download csv files')
+parser.add_argument('--images', action='store_true', help='Download csv files')
+args = parser.parse_args()
+if args.csv:
+    download_csv()
+if args.images:
+    champions = Champions()
+    champions.download_champion_images()
