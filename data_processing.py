@@ -31,20 +31,26 @@ def transform_patch(df):
     df.patch = df.patch.map(lambda x: int(x[2:] + x[:2]))
     return df
 
+
 def select_on_patch(df, min_patch, max_patch):
     return df[(df.patch>=min_patch) & (df.patch<=max_patch)]
+
 
 def select_on_leagues(df, chosen_leagues):
     return df[df.league.isin(chosen_leagues)]
 
+
 def select_on_league_macro(macro, chosen_leagues):
     return macro[macro.league.isin(chosen_leagues)]
     
+
 def select_on_league_micro(micro, games):
     return micro.merge(games, how='inner', on='gameid')
 
+
 def select_on_champion(df, champion_name):
     return df[df.champion==champion_name]
+
 
 def select_on_position(df, selected_position):
     return df[df.position==selected_position]
