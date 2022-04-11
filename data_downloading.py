@@ -2,6 +2,7 @@ import requests
 from datetime import datetime
 import os.path
 import argparse
+from utils import IMAGE_FOLDER
 
 
 def download_csv():
@@ -20,8 +21,6 @@ def download_csv():
 
 class Champions:
 
-    IMAGE_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'champion_images')
-
     def __init__(self, patch_version: str = "12.6.1"):
         patch_version = patch_version
         self.base_url = f"http://ddragon.leagueoflegends.com/cdn/{patch_version}"
@@ -29,26 +28,30 @@ class Champions:
     def list_champions(self):
         url = f'{self.base_url}/data/en_US/champion.json'
         result = requests.get(url).json()
-        return list(result.get('data').keys())
+        return [
+            {'id': item.get('id'), 'name': item.get('name')}
+            for item in result.get('data').values()
+        ]
 
     def download_champion_images(self):
-        champion_names = self.list_champions()
-        for name in champion_names:
+        champion_data = self.list_champions()
+        for champion_item in champion_data:
+            champion_id, champion_name = champion_item.get('id'), champion_item.get('name')
             base_url = f"https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion"
-            filename = f"{name}.png"
-            url = f"{base_url}/{filename}"
+            url = f"{base_url}/{champion_id}.png"
             r = requests.get(url)
-            print((url, filename, r.status_code))
-            with open(f'{self.IMAGE_FOLDER}/{filename}', 'wb') as f:
+            print((url, r.status_code, champion_id, champion_name))
+            with open(f'{IMAGE_FOLDER}/{champion_name}.png', 'wb') as f:
                 f.write(r.content)
 
 
-parser = argparse.ArgumentParser(description='Process some downloads.')
-parser.add_argument('--csv', action='store_true', help='Download csv files')
-parser.add_argument('--images', action='store_true', help='Download csv files')
-args = parser.parse_args()
-if args.csv:
-    download_csv()
-if args.images:
-    champions = Champions()
-    champions.download_champion_images()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Process some downloads.')
+    parser.add_argument('--csv', action='store_true', help='Download csv files')
+    parser.add_argument('--images', action='store_true', help='Download csv files')
+    args = parser.parse_args()
+    if args.csv:
+        download_csv()
+    if args.images:
+        champions = Champions()
+        champions.download_champion_images()

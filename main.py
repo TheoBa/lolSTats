@@ -12,8 +12,11 @@ def main():
     raw = load.load_raw()
     patches = process.get_patches(raw)
     with st.form('Select data range'):
-        patch_start, patch_end = st.select_slider(label='Chose patch range', options=patches,
-                                                  value=(patches[0], patches[-1]))
+        patch_start, patch_end = st.select_slider(
+            label='Chose patch range',
+            options=patches,
+            value=(patches[0], patches[-1])
+        )
         leagues = st.multiselect('Select league range', options=process.get_leagues(raw), default=major_leagues)
         submit_form = st.form_submit_button('Submit choices')
 
