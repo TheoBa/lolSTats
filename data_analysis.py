@@ -48,4 +48,4 @@ def presence_winrate_per_position(pos, top_champs_per_position, df):
             st.markdown(champion)
             image_from_champion(champion)
 
-    st.dataframe(df[df.champion.isin(champions_shortlist)])
+    #st.dataframe(df[df.champion.isin(champions_shortlist)])
