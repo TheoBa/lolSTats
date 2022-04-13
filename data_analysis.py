@@ -34,6 +34,14 @@ def get_plot_champions(df, champions, axis1, axis2):
     return fig
 
 
+def get_plot_teams(df, axis1, axis2):
+    fig = px.scatter(df, x=axis1, y=axis2, 
+                     hover_name="teamname",
+                     width=500, height=500
+    )
+    return fig
+
+
 def presence_winrate_per_position(pos, top_champs_per_position, df):
     champions_shortlist = top_champs_per_position[pos]
 
@@ -49,3 +57,19 @@ def presence_winrate_per_position(pos, top_champs_per_position, df):
             image_from_champion(champion)
 
     #st.dataframe(df[df.champion.isin(champions_shortlist)])
+
+
+def winrate_side_per_league(league, top_teams_per_league, df):
+    teams_shortlist = top_teams_per_league[league]
+
+    st.plotly_chart(
+        get_plot_teams(df[df.league == league], 'gamelength', 'winrate') 
+        )
+
+    st.subheader('Best teams of the region:')
+    cols = st.columns(len(teams_shortlist))
+    for i, team in enumerate(teams_shortlist):
+        with cols[i]:
+            st.markdown(team)
+
+    st.dataframe(df)

@@ -82,20 +82,19 @@ def get_champion_presence(micro, macro, champion):
     return round((total_games_picked + total_games_banned) / total_games_played, 3)
 
 
-def get_champion_winrate(df, champion):
-    cdt_pick = df.champion == champion
-    cdt_win = df.result == 1
-    games_played = len(df[cdt_pick].index)
-    games_won = len(df[cdt_pick & cdt_win].index)
-    return round(games_won / games_played, 3)
-
-
 def get_df_champions_statistics(micro):
     stats = [
         'result', 'kills', 'deaths', 'assists', 'damageshare', 'earnedgoldshare',
         'cspm', 'golddiffat15', 'xpdiffat15', 'csdiffat15'
     ]
     return micro.groupby(['champion'], as_index=False).mean(stats).rename(columns={'result': 'winrate'})
+
+
+def get_df_team_statistics(macro):
+    stats = {
+        'gamelength': 'mean', 'result': 'mean'
+    }
+    return macro.groupby(['teamname', 'league'], as_index=False).agg(stats).rename(columns={'result': 'winrate'})
 
 
 def champs_dataframe(micro, macro, stats):
@@ -114,3 +113,12 @@ def get_top_champs_per_position(micro):
                 by='counts', ascending=False).head(15).champion)
         top_champs_per_position[pos] = considered_champions
     return top_champs_per_position
+
+
+def get_top_team_per_league(stats):
+    top_teams_per_league = {}
+    for league in stats.league.unique():
+        considered_teams = list(
+            stats[stats.league == league].sort_values(by=['gamelength', 'winrate'], ascending=[True, False]).head(5).teamname)
+        top_teams_per_league[league] = considered_teams
+    return top_teams_per_league

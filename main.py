@@ -1,3 +1,4 @@
+from re import sub
 import streamlit as st
 import data_loading as load
 import data_processing as process
@@ -37,6 +38,32 @@ def main_position():
                 analysis.presence_winrate_per_position(pos, top_champs_per_position, champions_df)
 
 
+def main_team():
+    raw = load.load_raw()
+    patches = process.get_patches(raw)
+    with st.form('Select data range'):
+        patch_start, patch_end = st.select_slider(
+            label='Chose patch range',
+            options=patches,
+            value=(patches[0], patches[-1])
+        )
+        leagues = st.multiselect('Select league range', options=process.get_leagues(raw), default=major_leagues)
+        submit_form = st.form_submit_button('Submit choices')
+    
+    if submit_form:
+        raw = process.select_on_leagues(process.select_on_patch(raw, patch_start, patch_end), leagues)
+        macro_db = process.get_macro_db(raw)
+        stats = process.get_df_team_statistics(macro_db)
+        top_teams_per_league = process.get_top_team_per_league(stats) 
+
+        for league in leagues:
+            with st.expander('+ Pick analysis for the ' + league + ' league'):
+                analysis.winrate_side_per_league(league, top_teams_per_league, stats)
+
+        
+            
+
+
 st.markdown(
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">',
     unsafe_allow_html=True,
@@ -72,7 +99,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 if active_tab == "Position analysis":
     main_position()
 elif active_tab == "Team analysis":
-    st.write("This page was created as a hacky demo of tabs")
+    main_team()
 elif active_tab == "Player visualization":
     st.write("If you'd like to contact me, then please don't.")
 else:
