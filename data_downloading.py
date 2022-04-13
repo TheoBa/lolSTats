@@ -2,12 +2,13 @@ import requests
 from datetime import datetime
 import os.path
 import argparse
+from pytz import timezone
 from utils import IMAGE_FOLDER
 
 
 def download_csv():
     base_url = 'https://oracleselixir-downloadable-match-data.s3-us-west-2.amazonaws.com'
-    date = datetime.now().strftime('%Y%m%d')
+    date = datetime.now(timezone('US/Eastern')).strftime('%Y%m%d')
     data_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
     for year in range(2014, 2022 + 1):
