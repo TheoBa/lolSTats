@@ -20,7 +20,11 @@ def image_from_champion(champion_name):
 
 
 def get_plot_champions(df, champions, axis1, axis2):
-    fig = px.scatter(df, x=axis1, y=axis2)
+    fig = px.scatter(df, x=axis1, y=axis2, 
+                     hover_name="champion", 
+                     hover_data=["damageshare", "golddiffat15"],
+                     width=500, height=500
+    )
     for champion_name in champions:
         fig.add_layout_image(dict(
             source=f'{IMAGE_FOLDER}/{champion_name}.png',
@@ -34,8 +38,9 @@ def presence_winrate_per_position(pos, top_champs_per_position, df):
     champions_shortlist = top_champs_per_position[pos]
 
     st.plotly_chart(
-        get_plot_champions(df[df.champion.isin(champions_shortlist)], champions_shortlist, 'presence', 'winrate'),
-        use_container_width=True)
+        get_plot_champions(df[df.champion.isin(champions_shortlist)],champions_shortlist, 'presence', 'winrate'),
+                    #use_container_width=True
+        )
 
     cols = st.columns(len(champions_shortlist))
     for i, champion in enumerate(champions_shortlist):

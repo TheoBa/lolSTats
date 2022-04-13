@@ -1,6 +1,6 @@
 from data_processing import get_patches
 
 
-major_leagues = ['LDL', 'LPL', 'LCK', 'LFL', 'LCS', 'LEC', 'LCK CL']
+major_leagues = ['LPL', 'LCK', 'LCS', 'LEC']
 
-regional_leagues = ['']
+regional_leagues = ['LFL']
