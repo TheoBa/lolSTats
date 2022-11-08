@@ -1,15 +1,15 @@
 import streamlit as st
 from PIL import Image
-import cv2
+# import cv2
 import plotly.express as px
 from utils import IMAGE_FOLDER
 
 
-def cv2_image_from_champion(champion_name, flag):
-    try:
-        return st.image(cv2.imread(f'{IMAGE_FOLDER}/{champion_name}.png', flag))
-    except Exception as _:
-        return st.write(champion_name + ' has no stored image')
+# def cv2_image_from_champion(champion_name, flag):
+#     try:
+#         return st.image(cv2.imread(f'{IMAGE_FOLDER}/{champion_name}.png', flag))
+#     except Exception as _:
+#         return st.write(champion_name + ' has no stored image')
 
 
 def image_from_champion(champion_name):
